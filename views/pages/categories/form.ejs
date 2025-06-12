@@ -1,0 +1,87 @@
+
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-tags me-2"></i>
+        <%= category ? 'Edit Category' : 'Add Category' %>
+    </h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="/categories" class="btn btn-outline-secondary">
+            <i class="fas fa-arrow-left me-1"></i>Back to Categories
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <form method="POST" enctype="multipart/form-data">
+                    <div class="mb-3">
+                        <label for="name" class="form-label">Category Name *</label>
+                        <input type="text" class="form-control" id="name" name="name" 
+                               value="<%= category ? category.name : '' %>" required>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="description" class="form-label">Description</label>
+                        <textarea class="form-control" id="description" name="description" rows="3"
+                                  placeholder="Category description..."><%= category ? category.description || '' : '' %></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label for="image" class="form-label">Category Image</label>
+                        <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                        <% if (category && category.image_url) { %>
+                            <input type="hidden" name="existing_image_url" value="<%= category.image_url %>">
+                            <div class="mt-2">
+                                <img src="<%= category.image_url %>" alt="Current image" 
+                                     class="img-thumbnail" style="max-width: 200px;">
+                            </div>
+                        <% } %>
+                    </div>
+
+                    <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                        <a href="/categories" class="btn btn-secondary me-md-2">Cancel</a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-save me-1"></i>
+                            <%= category ? 'Update Category' : 'Create Category' %>
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h6 class="mb-0">Category Tips</h6>
+            </div>
+            <div class="card-body">
+                <ul class="list-unstyled mb-0">
+                    <li><i class="fas fa-lightbulb text-warning me-2"></i>Use descriptive names</li>
+                    <li><i class="fas fa-lightbulb text-warning me-2"></i>Add clear descriptions</li>
+                    <li><i class="fas fa-lightbulb text-warning me-2"></i>Upload appealing images</li>
+                    <li><i class="fas fa-lightbulb text-warning me-2"></i>Keep categories organized</li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="card mt-3">
+            <div class="card-header">
+                <h6 class="mb-0">Examples</h6>
+            </div>
+            <div class="card-body">
+                <small class="text-muted">
+                    <strong>Good categories:</strong><br>
+                    • Burgers<br>
+                    • Pizza<br>
+                    • Beverages<br>
+                    • Desserts<br>
+                    • Salads
+                </small>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,2 @@
+type node scripts/uploadSampleImages.js in terminal
+npm run dev to run the project

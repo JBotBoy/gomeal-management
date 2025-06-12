@@ -1,0 +1,578 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🍔</text></svg>">
+    <style>
+        :root {
+            --mcdonalds-red: #DA020E;
+            --mcdonalds-yellow: #FFC72C;
+            --mcdonalds-dark-red: #B8010C;
+            --mcdonalds-light-yellow: #FFD700;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+        }
+
+        .sidebar {
+            background: linear-gradient(135deg, var(--mcdonalds-red) 0%, var(--mcdonalds-dark-red) 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .sidebar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="50" cy="50" r="2" fill="rgba(255,199,44,0.1)"/></svg>') repeat;
+            pointer-events: none;
+        }
+
+        .sidebar-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .brand-logo {
+            background: var(--mcdonalds-yellow);
+            color: var(--mcdonalds-red);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            border: 3px solid rgba(255,255,255,0.2);
+        }
+
+        .brand-logo h4 {
+            margin: 0;
+            font-weight: bold;
+            font-size: 1.8rem;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .brand-emoji {
+            font-size: 2.5rem;
+            display: block;
+            margin-bottom: 10px;
+            animation: bounce 2s infinite;
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+            40% { transform: translateY(-10px); }
+            60% { transform: translateY(-5px); }
+        }
+
+        /* FIXED NAVIGATION STYLES - Higher specificity to override Bootstrap */
+        .sidebar .nav-link {
+            color: rgba(255,255,255,0.9) !important;
+            transition: all 0.3s ease;
+            margin-bottom: 8px;
+            padding: 15px 20px;
+            border-radius: 12px;
+            font-weight: 500;
+            position: relative;
+            overflow: hidden;
+            text-decoration: none;
+        }
+
+        .sidebar .nav-link::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,199,44,0.3), transparent);
+            transition: left 0.5s;
+        }
+
+        .sidebar .nav-link:hover::before {
+            left: 100%;
+        }
+
+        /* CRITICAL FIX: Active navigation styles with maximum specificity */
+        .sidebar .nav-link:hover,
+        .sidebar .nav-link.active,
+        .sidebar .nav-pills .nav-link.active,
+        .sidebar .nav-pills .show > .nav-link,
+        .sidebar .nav-item .nav-link.active {
+            color: var(--mcdonalds-red) !important;
+            background-color: var(--mcdonalds-yellow) !important;
+            background: var(--mcdonalds-yellow) !important;
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(255,199,44,0.4);
+            font-weight: bold !important;
+        }
+
+        /* Ensure icons are also the correct color when active */
+        .sidebar .nav-link.active i,
+        .sidebar .nav-link:hover i,
+        .sidebar .nav-item .nav-link.active i {
+            color: var(--mcdonalds-red) !important;
+        }
+
+        /* Force active state to override any Bootstrap defaults */
+        .sidebar .nav-pills .nav-link.active:focus,
+        .sidebar .nav-pills .nav-link.active:hover,
+        .sidebar .nav-item .nav-link.active:focus,
+        .sidebar .nav-item .nav-link.active:hover {
+            color: var(--mcdonalds-red) !important;
+            background-color: var(--mcdonalds-yellow) !important;
+        }
+
+        .sidebar .nav-link i {
+            width: 20px;
+            margin-right: 12px;
+            font-size: 1.1rem;
+        }
+
+        .main-content {
+            background: linear-gradient(135deg, #f8f9fa 0%, #fff 100%);
+            min-height: 100vh;
+            position: relative;
+        }
+
+        .page-header {
+            background: linear-gradient(135deg, var(--mcdonalds-yellow) 0%, var(--mcdonalds-light-yellow) 100%);
+            color: var(--mcdonalds-red);
+            padding: 30px;
+            border-radius: 20px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(255,199,44,0.3);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page-header::before {
+            content: '🍟';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            font-size: 8rem;
+            opacity: 0.1;
+            transform: rotate(15deg);
+        }
+
+        .page-header h1 {
+            font-weight: bold;
+            font-size: 2.5rem;
+            margin: 0;
+            text-shadow: 1px 1px 2px rgba(0,0,0,0.1);
+        }
+
+        .card {
+            border: none;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+            transition: all 0.3s ease;
+            border-radius: 15px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        }
+
+        .card-header {
+            background: linear-gradient(135deg, var(--mcdonalds-red) 0%, var(--mcdonalds-dark-red) 100%);
+            color: white;
+            border: none;
+            padding: 20px;
+            font-weight: bold;
+        }
+
+        .stats-card {
+            background: linear-gradient(135deg, var(--mcdonalds-yellow) 0%, var(--mcdonalds-light-yellow) 100%);
+            color: var(--mcdonalds-red);
+            border-radius: 15px;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255,255,255,0.1) 0%, transparent 70%);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .stats-number {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+        }
+
+        .stats-label {
+            font-size: 1.1rem;
+            font-weight: 600;
+            opacity: 0.8;
+        }
+
+        .btn-mcdonalds {
+            background: linear-gradient(135deg, var(--mcdonalds-red) 0%, var(--mcdonalds-dark-red) 100%);
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-mcdonalds:hover {
+            background: linear-gradient(135deg, var(--mcdonalds-dark-red) 0%, var(--mcdonalds-red) 100%);
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(218,2,14,0.4);
+        }
+
+        .btn-mcdonalds-yellow {
+            background: linear-gradient(135deg, var(--mcdonalds-yellow) 0%, var(--mcdonalds-light-yellow) 100%);
+            color: var(--mcdonalds-red);
+            border: none;
+            padding: 12px 30px;
+            border-radius: 25px;
+            font-weight: bold;
+            transition: all 0.3s ease;
+        }
+
+        .btn-mcdonalds-yellow:hover {
+            background: linear-gradient(135deg, var(--mcdonalds-light-yellow) 0%, var(--mcdonalds-yellow) 100%);
+            color: var(--mcdonalds-dark-red);
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(255,199,44,0.4);
+        }
+
+        .table thead th {
+            background: var(--mcdonalds-red);
+            color: white;
+            border: none;
+            font-weight: bold;
+            padding: 15px;
+        }
+
+        .table tbody tr:hover {
+            background: rgba(255,199,44,0.1);
+        }
+
+        .badge-mcdonalds {
+            background: var(--mcdonalds-red);
+            color: white;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-weight: bold;
+        }
+
+        .form-control:focus {
+            border-color: var(--mcdonalds-yellow);
+            box-shadow: 0 0 0 0.2rem rgba(255,199,44,0.25);
+        }
+
+        .alert-mcdonalds {
+            background: linear-gradient(135deg, var(--mcdonalds-yellow) 0%, var(--mcdonalds-light-yellow) 100%);
+            color: var(--mcdonalds-red);
+            border: 2px solid var(--mcdonalds-red);
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                min-height: auto;
+            }
+            
+            .brand-logo {
+                margin-bottom: 20px;
+                padding: 15px;
+            }
+            
+            .brand-emoji {
+                font-size: 2rem;
+            }
+            
+            .page-header h1 {
+                font-size: 2rem;
+            }
+            
+            .stats-number {
+                font-size: 2rem;
+            }
+        }
+
+        /* Loading Animation */
+        .loading-spinner {
+            border: 4px solid var(--mcdonalds-yellow);
+            border-top: 4px solid var(--mcdonalds-red);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* Scrollbar Styling */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: #f1f1f1;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--mcdonalds-red);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--mcdonalds-dark-red);
+        }
+
+        /* Floating Action Button */
+        .fab {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            background: linear-gradient(135deg, var(--mcdonalds-red) 0%, var(--mcdonalds-dark-red) 100%);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 60px;
+            height: 60px;
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(218,2,14,0.4);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .fab:hover {
+            transform: scale(1.1);
+            box-shadow: 0 6px 20px rgba(218,2,14,0.6);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid">
+        <div class="row">
+            <!-- Sidebar -->
+            <nav class="col-md-3 col-lg-2 d-md-block sidebar p-3">
+                <div class="position-sticky sidebar-content">
+                    <div class="brand-logo">
+                        <span class="brand-emoji">🍔</span>
+                        <h4>McToenalds</h4>
+                        <small>Management System</small>
+                    </div>
+                    
+                    <ul class="nav nav-pills flex-column mb-auto">
+                        <li class="nav-item">
+                            <a href="/" class="nav-link <%= (title && (title.includes('Dashboard') || title === 'Dashboard - GoMeal')) ? 'active' : '' %>" data-page="dashboard">
+                                <i class="fas fa-chart-pie"></i>Dashboard
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/categories" class="nav-link <%= (title && title.includes('Categories')) ? 'active' : '' %>" data-page="categories">
+                                <i class="fas fa-tags"></i>Categories
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/products" class="nav-link <%= (title && title.includes('Product')) ? 'active' : '' %>" data-page="products">
+                                <i class="fas fa-hamburger"></i>Products
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="/orders" class="nav-link <%= (title && title.includes('Order')) ? 'active' : '' %>" data-page="orders">
+                                <i class="fas fa-shopping-cart"></i>Orders
+                            </a>
+                        </li>
+                    </ul>
+
+                    <div class="mt-4 pt-4 border-top border-light">
+                        <div class="text-light text-center">
+                            <small>🍟 Powered by McToenalds</small><br>
+                            <small>© <%= new Date().getFullYear() %></small>
+                        </div>
+                    </div>
+                </div>
+            </nav>
+
+            <!-- Main content -->
+            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4 main-content">
+                <div class="py-4">
+                    <%- body %>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Floating Action Button -->
+    <button class="fab" onclick="scrollToTop()" title="Back to top">
+        <i class="fas fa-arrow-up"></i>
+    </button>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    
+    <script>
+        // IMPROVED: Set active navigation link with better detection
+        document.addEventListener('DOMContentLoaded', function() {
+            const currentPath = window.location.pathname;
+            const navLinks = document.querySelectorAll('.sidebar .nav-link');
+            
+            // Check if any link already has active class from server-side
+            const hasServerActive = document.querySelector('.sidebar .nav-link.active');
+            
+            // Only run client-side detection if no server-side active class exists
+            if (!hasServerActive) {
+                // Remove all active classes first
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                });
+                
+                // Determine which link should be active based on current path
+                let activeLink = null;
+                
+                if (currentPath === '/' || currentPath === '/dashboard') {
+                    activeLink = document.querySelector('.sidebar .nav-link[data-page="dashboard"]');
+                } else if (currentPath.startsWith('/categories')) {
+                    activeLink = document.querySelector('.sidebar .nav-link[data-page="categories"]');
+                } else if (currentPath.startsWith('/products')) {
+                    activeLink = document.querySelector('.sidebar .nav-link[data-page="products"]');
+                } else if (currentPath.startsWith('/orders')) {
+                    activeLink = document.querySelector('.sidebar .nav-link[data-page="orders"]');
+                }
+                
+                // Add active class to the determined link
+                if (activeLink) {
+                    activeLink.classList.add('active');
+                }
+            }
+            
+            // Ensure active link styling persists (prevent any other scripts from removing it)
+            setInterval(function() {
+                const currentPath = window.location.pathname;
+                const currentActive = document.querySelector('.sidebar .nav-link.active');
+                
+                if (currentActive) {
+                    // Force the styling to stay
+                    currentActive.style.cssText += `
+                        background-color: #FFC72C !important;
+                        color: #DA020E !important;
+                        font-weight: bold !important;
+                    `;
+                }
+            }, 1000);
+        });
+
+        // Smooth scroll to top
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Show/hide floating action button based on scroll
+        window.addEventListener('scroll', function() {
+            const fab = document.querySelector('.fab');
+            if (window.scrollY > 300) {
+                fab.style.display = 'block';
+            } else {
+                fab.style.display = 'none';
+            }
+        });
+
+        // Add loading states to forms
+        document.querySelectorAll('form').forEach(form => {
+            form.addEventListener('submit', function() {
+                const submitButton = form.querySelector('button[type="submit"]');
+                if (submitButton) {
+                    submitButton.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Processing...';
+                    submitButton.disabled = true;
+                }
+            });
+        });
+
+        // Add ripple effect to buttons
+        document.querySelectorAll('.btn-mcdonalds, .btn-mcdonalds-yellow').forEach(button => {
+            button.addEventListener('click', function(e) {
+                const ripple = document.createElement('span');
+                const rect = this.getBoundingClientRect();
+                const size = Math.max(rect.width, rect.height);
+                const x = e.clientX - rect.left - size / 2;
+                const y = e.clientY - rect.top - size / 2;
+                
+                ripple.style.cssText = `
+                    position: absolute;
+                    width: ${size}px;
+                    height: ${size}px;
+                    left: ${x}px;
+                    top: ${y}px;
+                    background: rgba(255, 255, 255, 0.6);
+                    border-radius: 50%;
+                    transform: scale(0);
+                    animation: ripple 0.6s linear;
+                    pointer-events: none;
+                `;
+                
+                this.style.position = 'relative';
+                this.style.overflow = 'hidden';
+                this.appendChild(ripple);
+                
+                setTimeout(() => ripple.remove(), 600);
+            });
+        });
+
+        // Auto-hide alerts
+        setTimeout(() => {
+            document.querySelectorAll('.alert').forEach(alert => {
+                alert.style.opacity = '0';
+                setTimeout(() => alert.remove(), 300);
+            });
+        }, 5000);
+    </script>
+
+    <style>
+        @keyframes ripple {
+            to {
+                transform: scale(4);
+                opacity: 0;
+            }
+        }
+    </style>
+</body>
+</html>

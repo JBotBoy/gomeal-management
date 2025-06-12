@@ -1,0 +1,73 @@
+
+
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">
+        <i class="fas fa-tags me-2"></i>Categories
+    </h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <a href="/categories/new" class="btn btn-primary">
+            <i class="fas fa-plus me-1"></i>Add Category
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <% if (categories.length === 0) { %>
+        <div class="col-12">
+            <div class="text-center py-5">
+                <i class="fas fa-tags fa-3x text-muted mb-3"></i>
+                <h5 class="text-muted">No categories found</h5>
+                <p class="text-muted">Start by adding your first category.</p>
+                <a href="/categories/new" class="btn btn-primary">Add Category</a>
+            </div>
+        </div>
+    <% } else { %>
+        <% categories.forEach(category => { %>
+            <div class="col-md-6 col-lg-4 mb-4">
+                <div class="card h-100">
+                    <% if (category.image_url) { %>
+                        <img src="<%= category.image_url %>" class="card-img-top" alt="<%= category.name %>"
+                             style="height: 200px; object-fit: cover;">
+                    <% } else { %>
+                        <div class="card-img-top bg-light d-flex align-items-center justify-content-center"
+                             style="height: 200px;">
+                            <i class="fas fa-image fa-3x text-muted"></i>
+                        </div>
+                    <% } %>
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title"><%= category.name %></h5>
+                        <p class="card-text flex-grow-1">
+                            <%= category.description || 'No description available' %>
+                        </p>
+                        <div class="d-flex justify-content-between align-items-center">
+                            <small class="text-muted">
+                                Created: <%= new Date(category.created_at).toLocaleDateString() %>
+                            </small>
+                            <div class="btn-group btn-group-sm">
+                                <a href="/categories/edit/<%= category.id %>" class="btn btn-outline-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <button type="button" class="btn btn-outline-danger" 
+                                        onclick="deleteCategory(<%= category.id %>, '<%= category.name %>')">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <% }) %>
+    <% } %>
+</div>
+
+<script>
+function deleteCategory(id, name) {
+    if (confirm(`Are you sure you want to delete "${name}"?`)) {
+        const form = document.createElement('form');
+        form.method = 'POST';
+        form.action = `/categories/delete/${id}`;
+        document.body.appendChild(form);
+        form.submit();
+    }
+}
+</script>

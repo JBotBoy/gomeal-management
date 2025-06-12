@@ -1,0 +1,509 @@
+<div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
+    <h1 class="h2">Dashboard</h1>
+    <div class="btn-toolbar mb-2 mb-md-0">
+        <div class="btn-group me-2">
+            <button type="button" class="btn btn-sm btn-outline-secondary">
+                <i class="fas fa-download me-1"></i>Export
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Stats Cards -->
+<div class="row mb-4">
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card stats-card text-white">
+            <div class="card-body">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-white text-uppercase mb-1">Today's Orders</div>
+                        <div class="h5 mb-0 font-weight-bold"><%= todayOrders %></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-calendar-day fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card" style="background: linear-gradient(135deg, #a8edea 0%, #fed6e3 100%);">
+            <div class="card-body text-white">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-white text-uppercase mb-1">Total Orders</div>
+                        <div class="h5 mb-0 font-weight-bold">
+                            <%= totalOrders || 0 %>
+                        </div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-shopping-cart fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card" style="background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);">
+            <div class="card-body text-white">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-white text-uppercase mb-1">Annual Revenue</div>
+                        <div class="h5 mb-0 font-weight-bold">€<%= totalRevenue.toFixed(2) %></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-euro-sign fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-xl-3 col-md-6 mb-4">
+        <div class="card" style="background: linear-gradient(135deg, #a1c4fd 0%, #c2e9fb 100%);">
+            <div class="card-body text-white">
+                <div class="row no-gutters align-items-center">
+                    <div class="col mr-2">
+                        <div class="text-xs font-weight-bold text-white text-uppercase mb-1">Active Products</div>
+                        <div class="h5 mb-0 font-weight-bold"><%= totalProducts || 0 %></div>
+                    </div>
+                    <div class="col-auto">
+                        <i class="fas fa-boxes fa-2x"></i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Recent Orders Section -->
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <h5 class="mb-0">
+                    <i class="fas fa-clock me-2"></i>Recent Orders
+                </h5>
+                <a href="/orders" class="btn btn-sm btn-outline-primary">
+                    <i class="fas fa-eye me-1"></i>View All Orders
+                </a>
+            </div>
+            <div class="card-body p-0">
+                <% if (recentOrders && recentOrders.length > 0) { %>
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Order ID</th>
+                                <th>Customer</th>
+                                <th>Amount</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <% recentOrders.slice(0, 5).forEach(function(order) { %>
+                            <tr>
+                                <td>
+                                    <strong class="text-primary">#<%= order.id %></strong>
+                                </td>
+                                <td>
+                                    <div>
+                                        <strong><%= order.customer_name %></strong><br>
+                                        <small class="text-muted">
+                                            <i class="fas fa-envelope me-1"></i><%= order.customer_email %>
+                                        </small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <strong class="text-success">€<%= parseFloat(order.total_amount).toFixed(2) %></strong>
+                                </td>
+                                <td>
+                                    <% 
+                                    let statusClass = 'secondary';
+                                    let statusIcon = 'fas fa-clock';
+                                    switch(order.status) {
+                                        case 'pending':
+                                            statusClass = 'warning';
+                                            statusIcon = 'fas fa-clock';
+                                            break;
+                                        case 'confirmed':
+                                            statusClass = 'info';
+                                            statusIcon = 'fas fa-check-circle';
+                                            break;
+                                        case 'preparing':
+                                            statusClass = 'primary';
+                                            statusIcon = 'fas fa-utensils';
+                                            break;
+                                        case 'ready':
+                                            statusClass = 'success';
+                                            statusIcon = 'fas fa-bell';
+                                            break;
+                                        case 'completed':
+                                            statusClass = 'success';
+                                            statusIcon = 'fas fa-check-double';
+                                            break;
+                                        case 'cancelled':
+                                            statusClass = 'danger';
+                                            statusIcon = 'fas fa-times-circle';
+                                            break;
+                                    }
+                                    %>
+                                    <span class="badge bg-<%= statusClass %>">
+                                        <i class="<%= statusIcon %> me-1"></i>
+                                        <%= order.status.charAt(0).toUpperCase() + order.status.slice(1) %>
+                                    </span>
+                                </td>
+                                <td>
+                                    <div>
+                                        <%= new Date(order.created_at).toLocaleDateString() %><br>
+                                        <small class="text-muted">
+                                            <%= new Date(order.created_at).toLocaleTimeString() %>
+                                        </small>
+                                    </div>
+                                </td>
+                                <td>
+                                    <a href="/orders/detail/<%= order.id %>" 
+                                       class="btn btn-sm btn-outline-primary" 
+                                       title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            <% }); %>
+                        </tbody>
+                    </table>
+                </div>
+                <% } else { %>
+                <div class="text-center py-5">
+                    <i class="fas fa-shopping-cart fa-3x text-muted mb-3"></i>
+                    <h5 class="text-muted">No orders yet</h5>
+                    <p class="text-muted">Orders will appear here once customers start placing them.</p>
+                    <div class="mt-3">
+                        <a href="/products" class="btn btn-primary me-2">
+                            <i class="fas fa-plus me-1"></i>Add Products
+                        </a>
+                        <small class="text-muted d-block mt-2">
+                            <strong>Test API:</strong> Use ThunderClient to POST to /api/orders
+                        </small>
+                    </div>
+                </div>
+                <% } %>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Charts -->
+<div class="row">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-line me-2"></i>Orders per Month
+                    <small class="text-muted">(Last 6 Months)</small>
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="monthlyChart" width="400" height="200"></canvas>
+                <div class="mt-3 text-center">
+                    <small class="text-muted">
+                        Total orders in period: <%= Object.values(monthlyStats).reduce((a, b) => a + b, 0) %>
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="mb-0">
+                    <i class="fas fa-chart-pie me-2"></i>Order Status Distribution
+                </h5>
+            </div>
+            <div class="card-body">
+                <canvas id="statusChart" width="400" height="300"></canvas>
+                <div class="mt-3">
+                    <div class="row text-center">
+                        <div class="col-6">
+                            <small class="text-muted">Pending</small><br>
+                            <strong class="text-warning"><%= statusBreakdown.pending %></strong>
+                        </div>
+                        <div class="col-6">
+                            <small class="text-muted">Completed</small><br>
+                            <strong class="text-success"><%= statusBreakdown.completed %></strong>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Get data from server
+const monthlyLabels = <%- JSON.stringify(monthLabels || Object.keys(monthlyStats)) %>;
+const monthlyOrderCounts = <%- JSON.stringify(Object.values(monthlyStats)) %>;
+const statusData = <%- JSON.stringify(statusBreakdown || {}) %>;
+
+console.log('Chart data:', { monthlyLabels, monthlyOrderCounts, statusData });
+
+// Monthly Orders Chart
+const monthlyCtx = document.getElementById('monthlyChart').getContext('2d');
+const monthlyChart = new Chart(monthlyCtx, {
+    type: 'line',
+    data: {
+        labels: monthlyLabels,
+        datasets: [{
+            label: 'Orders',
+            data: monthlyOrderCounts,
+            borderColor: '#DA020E',
+            backgroundColor: 'rgba(218, 2, 14, 0.1)',
+            borderWidth: 3,
+            tension: 0.4,
+            fill: true,
+            pointBackgroundColor: '#DA020E',
+            pointBorderColor: '#fff',
+            pointBorderWidth: 2,
+            pointRadius: 6,
+            pointHoverRadius: 8
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: true,
+                position: 'top',
+                labels: {
+                    usePointStyle: true,
+                    font: {
+                        size: 12
+                    }
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                titleColor: '#fff',
+                bodyColor: '#fff',
+                borderColor: '#DA020E',
+                borderWidth: 1
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                ticks: {
+                    stepSize: 1,
+                    callback: function(value) {
+                        if (Number.isInteger(value)) {
+                            return value + ' orders';
+                        }
+                    }
+                },
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.1)'
+                }
+            },
+            x: {
+                grid: {
+                    color: 'rgba(0, 0, 0, 0.1)'
+                }
+            }
+        },
+        elements: {
+            point: {
+                hoverBackgroundColor: '#FFC72C'
+            }
+        }
+    }
+});
+
+// Status Chart
+const statusCtx = document.getElementById('statusChart').getContext('2d');
+
+// Prepare data for status chart
+const statusLabels = [];
+const statusValues = [];
+const statusColors = [];
+
+Object.keys(statusData).forEach(status => {
+    const count = statusData[status];
+    if (count > 0) { // Only show statuses that have orders
+        statusLabels.push(status.charAt(0).toUpperCase() + status.slice(1));
+        statusValues.push(count);
+        
+        // Assign colors based on status
+        switch(status) {
+            case 'pending':
+                statusColors.push('#FFC107');
+                break;
+            case 'confirmed':
+                statusColors.push('#0DCAF0');
+                break;
+            case 'preparing':
+                statusColors.push('#6F42C1');
+                break;
+            case 'ready':
+                statusColors.push('#198754');
+                break;
+            case 'completed':
+                statusColors.push('#20C997');
+                break;
+            case 'cancelled':
+                statusColors.push('#DC3545');
+                break;
+            default:
+                statusColors.push('#6C757D');
+        }
+    }
+});
+
+// If no data, show sample data
+if (statusValues.length === 0) {
+    statusLabels.push('Pending', 'Confirmed');
+    statusValues.push(2, 1);
+    statusColors.push('#FFC107', '#0DCAF0');
+}
+
+const statusChart = new Chart(statusCtx, {
+    type: 'doughnut',
+    data: {
+        labels: statusLabels,
+        datasets: [{
+            data: statusValues,
+            backgroundColor: statusColors,
+            borderWidth: 3,
+            borderColor: '#fff',
+            hoverBorderWidth: 4,
+            hoverOffset: 10
+        }]
+    },
+    options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'bottom',
+                labels: {
+                    padding: 15,
+                    usePointStyle: true,
+                    font: {
+                        size: 11
+                    }
+                }
+            },
+            tooltip: {
+                backgroundColor: 'rgba(0, 0, 0, 0.8)',
+                titleColor: '#fff',
+                bodyColor: '#fff',
+                borderColor: '#DA020E',
+                borderWidth: 1,
+                callbacks: {
+                    label: function(context) {
+                        const total = context.dataset.data.reduce((a, b) => a + b, 0);
+                        const percentage = ((context.parsed * 100) / total).toFixed(1);
+                        return context.label + ': ' + context.parsed + ' (' + percentage + '%)';
+                    }
+                }
+            }
+        },
+        cutout: '50%',
+        animation: {
+            animateRotate: true,
+            animateScale: true,
+            duration: 1000,
+            easing: 'easeOutQuart'
+        }
+    }
+});
+
+// Add chart animation on load
+document.addEventListener('DOMContentLoaded', function() {
+    // Trigger chart animations
+    setTimeout(() => {
+        monthlyChart.update('active');
+        statusChart.update('active');
+    }, 500);
+});
+</script>
+
+<style>
+/* Enhanced styles for the charts and dashboard */
+.table tbody tr:hover {
+    background-color: rgba(255,199,44,0.1);
+}
+
+.badge {
+    font-size: 0.75rem;
+    padding: 0.4em 0.6em;
+}
+
+.card-header {
+    background-color: #f8f9fa;
+    border-bottom: 1px solid #dee2e6;
+    font-weight: 600;
+}
+
+.btn-outline-primary:hover {
+    background-color: #0d6efd;
+    border-color: #0d6efd;
+}
+
+/* Animation for table rows */
+.table tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+/* Make status badges more prominent */
+.badge i {
+    font-size: 0.7em;
+}
+
+/* Chart container improvements */
+.card-body canvas {
+    max-height: 300px;
+}
+
+/* Stats card hover effects */
+.stats-card {
+    background: linear-gradient(135deg, #DA020E 0%, #B8010C 100%) !important;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.stats-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 25px rgba(218, 2, 14, 0.3);
+}
+
+/* Chart animations */
+@keyframes chartSlideIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.card {
+    animation: chartSlideIn 0.6s ease-out;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card-body canvas {
+        max-height: 250px;
+    }
+    
+    .stats-card .h5 {
+        font-size: 1.5rem;
+    }
+}
+</style>
